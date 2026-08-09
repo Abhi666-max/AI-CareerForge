@@ -1,0 +1,290 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ────────── Design Tokens ────────── */
+:root {
+  --bg-base:       #050811;
+  --bg-surface:    #0c111e;
+  --bg-elevated:   #111827;
+  --bg-overlay:    rgba(11, 17, 32, 0.85);
+
+  --border-subtle: rgba(99, 102, 241, 0.12);
+  --border-glow:   rgba(99, 102, 241, 0.4);
+
+  --accent-primary: #6366f1;
+  --accent-violet:  #7c3aed;
+  --accent-cyan:    #22d3ee;
+  --accent-rose:    #f43f5e;
+  --accent-amber:   #f59e0b;
+  --accent-emerald: #10b981;
+  /* ────────── Core Colors (Deep Space Monochrome) ────────── */
+  --bg-base: #09090B;          /* Deep space black */
+  --bg-surface: #121214;       /* Slightly elevated */
+  --bg-surface-hover: #1c1c1f;
+
+  /* ────────── Accents (Subtle Glows) ────────── */
+  --accent-primary: #a1a1aa;   /* Slate/zinc */
+  --accent-emerald: #10b981;   /* Kept for success, but muted in usage */
+  
+  /* ────────── Text ────────── */
+  --text-primary: #ffffff;     /* Crisp white */
+  --text-secondary: #a1a1aa;   /* Slate gray */
+  --text-muted: #71717a;       /* Darker slate */
+
+  /* ────────── Borders & Glows ────────── */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(161, 161, 170, 0.2);
+  --glass-bg: rgba(18, 18, 20, 0.6);
+}
+
+@theme inline {
+  --color-background: var(--bg-base);
+  --color-foreground: var(--text-primary);
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+/* ────────── Base Reset ────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ────────── Scrollbar ────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-surface); }
+::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.4); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
+
+/* ────────── Noise Texture Overlay ────────── */
+.noise-overlay::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ────────── Ambient Background ────────── */
+.ambient-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: 
+    radial-gradient(circle at 15% 50%, rgba(255,255,255,0.02), transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(255,255,255,0.015), transparent 40%);
+  filter: blur(80px);
+}
+
+/* ────────── Glass Card ────────── */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+}
+.glass-card:hover {
+  border-color: var(--border-glow);
+}
+
+/* ────────── Typography & Gradients ────────── */
+.gradient-text {
+  background: linear-gradient(to right, #ffffff, #a1a1aa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ────────── Buttons & CTAs ────────── */
+.btn-glow {
+  background: var(--text-primary);
+  color: var(--bg-base);
+  border-radius: 9999px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255,255,255,0.8);
+}
+.btn-glow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255,255,255,0.15);
+}
+.btn-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.btn-glow:hover::before { opacity: 1; }
+.btn-glow:active { transform: translateY(0); }
+
+/* ────────── Drop Zone States ────────── */
+.dropzone-idle {
+  border: 2px dashed rgba(99,102,241,0.3);
+  background: rgba(99,102,241,0.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.dropzone-active {
+  border: 2px dashed var(--accent-primary);
+  background: rgba(99,102,241,0.1);
+  box-shadow: 0 0 40px rgba(99,102,241,0.2), inset 0 0 40px rgba(99,102,241,0.05);
+}
+.dropzone-accept {
+  border: 2px dashed var(--accent-emerald);
+  background: rgba(16,185,129,0.07);
+  box-shadow: 0 0 40px rgba(16,185,129,0.15), inset 0 0 40px rgba(16,185,129,0.05);
+}
+.dropzone-reject {
+  border: 2px dashed #f43f5e;
+  background: rgba(244,63,94,0.07);
+  box-shadow: 0 0 40px rgba(244,63,94,0.15), inset 0 0 40px rgba(244,63,94,0.05);
+}
+
+/* ────────── Progress Bar ────────── */
+.progress-bar {
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-primary), #22d3ee);
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(99,102,241,0.6);
+  animation: progress-shimmer 1.5s ease infinite;
+}
+@keyframes progress-shimmer {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+/* ────────── Pulse Ring ────────── */
+@keyframes pulse-ring {
+  0%   { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+.pulse-ring {
+  animation: pulse-ring 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ────────── Floating Particles ────────── */
+@keyframes float-particle {
+  0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.4; }
+  33%       { transform: translateY(-20px) translateX(10px) scale(1.1); opacity: 0.7; }
+  66%       { transform: translateY(-10px) translateX(-8px) scale(0.9); opacity: 0.5; }
+}
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: float-particle var(--dur, 6s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+/* ────────── Scan Line (Upload Processing) ────────── */
+@keyframes scan-line {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+.scan-line {
+  animation: scan-line 2s linear infinite;
+}
+
+/* ────────── Fade-in Up ────────── */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* ────────── Shimmer Loading ────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+.shimmer {
+  background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.05) 50%, transparent 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+/* ────────── Nav Line ────────── */
+.nav-blur {
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid rgba(99,102,241,0.1);
+}
+
+/* ────────── Step Indicator ────────── */
+.step-active { color: var(--accent-primary); }
+.step-completed { color: var(--accent-emerald); }
+.step-inactive { color: var(--text-muted); }
+
+/* ────────── Phase 2: Recording Animations ────────── */
+@keyframes recording-dot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px #f43f5e; }
+  50%       { opacity: 0.4; box-shadow: 0 0 0px #f43f5e; }
+}
+
+@keyframes recording-pulse {
+  0%, 100% { opacity: 0.6; transform: scaleX(1); }
+  50%       { opacity: 1;   transform: scaleX(1.02); }
+}
+
+/* Waveform container glow pulse while recording */
+@keyframes waveform-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(99,102,241,0.08); }
+  50%       { box-shadow: 0 0 40px rgba(99,102,241,0.18); }
+}
+
+/* Focus mode — full-page dim overlay (not shown yet, ready for module) */
+.focus-dim-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 8, 17, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Countdown number animation */
+@keyframes countdown-pop {
+  0%   { transform: scale(2) translateY(-8px); opacity: 0; }
+  40%  { transform: scale(1) translateY(0);    opacity: 1; }
+  80%  { transform: scale(1) translateY(0);    opacity: 1; }
+  100% { transform: scale(0.6) translateY(8px); opacity: 0; }
+}
+
+/* STAR method tip underline slide */
+.star-tip {
+  position: relative;
+}
+.star-tip::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--accent-primary);
+  transition: width 0.4s ease;
+}
+.star-tip:hover::after { width: 100%; }
